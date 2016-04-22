@@ -8,11 +8,12 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link rel="stylesheet" type="text/css" href="css/sweetalert.css">
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/materialize.js"></script>
   <script src="js/init.js"></script>
-  
+  <script src="js/sweetalert.min.js"></script>
 </head>
 <body>
   <nav class="white" role="navigation">
@@ -135,50 +136,44 @@
   <footer class="page-footer teal">
   <div class="container">
   <div class="row">
-	<div class="col s12 center">
+	<div class="col s8 offset-s2 center">
 		
-		<div class="row">
-			<div class="col-md-12">
-				<div class="well well-sm">
-				
-					<form class="form-horizontal" method="post">
-						<fieldset>
-							<h5 class="white-text">Contáctame</h5>
-							<p class="white-text center text-lighten-4">
-								Envíame un correo.
-							</p>
-							<div class="row valign-wrapper">
-								<span class="col m3 white-text text-center"><i class="material-icons md-light md-24">account_box</i></span>
-								<div class="col m9">
-									<input id="subject" name="name" type="text" placeholder="Nombre" class="form-control">
-								</div>
-							</div>
+    <div class="form-horizontal">
+      <fieldset>
+        <h5 class="white-text">Contáctame</h5>
+        <p class="white-text center text-lighten-4">
+          Envíame un correo.
+        </p>
+        <div class="row valign-wrapper">
+          <span class="col m3 white-text text-center"><i class="material-icons medium">account_box</i></span>
+          <div class="col m9">
+            <input id="subject" name="name" type="text" placeholder="Nombre" class="form-control">
+          </div>
+        </div>
 
-							<div class="row valign-wrapper">
-								<span class="col m3 white-text text-center"><i class="material-icons md-light">mail</i></span>
-								<div class="col m9">
-									<input id="to" name="email" type="text" placeholder="Correo" class="form-control">
-								</div>
-							</div>
+        <div class="row valign-wrapper">
+          <span class="col m3 white-text text-center"><i class="material-icons medium">mail</i></span>
+          <div class="col m9">
+            <input id="to" name="email" type="text" placeholder="Correo" class="form-control">
+          </div>
+        </div>
 
-							<div class="row valign-wrapper">
-								<span class="col m3 white-text text-center"><i class="material-icons md-light">comment</i></span>
-								<div class="col m9">
-									<textarea class="form-control" id="content" name="message" placeholder="Escribe tu mensaje" rows="7"></textarea>
-								</div>
-							</div>
-
-							<div class="row valign-wrapper">
-								<div class="col m12 text-center">
-									<button id="send_email" class="btn btn-primary btn-lg">Envíar Correo</button>
-								</div>
-							</div>
-						</fieldset>
-					</form>
-				</div>
-			</div>
-		</div>
-		
+        <div class="row valign-wrapper">
+          <span class="col m3 white-text text-center"><i class="material-icons medium">comment</i></span>
+          <div class="col m9">
+            <textarea class="form-control" id="content" name="message" placeholder="Escribe tu mensaje" rows="7"></textarea>
+          </div>
+        </div>
+        <div class="row valign-wrapper">
+          <div class="col m12 text-center">
+            <button id="send_email" class="btn btn-primary btn-lg">Envíar Correo</button>
+          </div>
+        </div>
+        <div class="progress" style="display:none">
+          <div class="indeterminate"></div>
+        </div>
+      </fieldset>
+    </div>		
 	</div>
   </div>
   </div>
@@ -199,14 +194,16 @@ $(document).ready(function(){
         to=$("#to").val();
         subject=$("#subject").val();
         text=$("#content").val();
-        $("#message").text("Sending E-mail...Please wait");
-        $.get("http://localhost:8000/send",{to:to,subject:subject,text:text},function(data){
-        if(data=="sent")
-        {
-            $("#message").empty().html("Email is been sent at "+to+" . Please check inbox !");
-        }
-});
+        $(".progress").show();
+        $.get('/send',{to:to,subject:subject,text:text}).done(function(data){
+			    if(data == "sent")
+          {
+            $(".progress").hide();
+            swal("Muchas Gracias!", "El mensaje ha sido enviado!", "success");
+          }
+		});
     });
+	
 });
 </script>
 </html>

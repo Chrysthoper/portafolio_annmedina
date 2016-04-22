@@ -24,16 +24,7 @@ var transport = nodemailer.createTransport("SMTP", {
         ciphers:'SSLv3'
     }
 });
-/*
-// setup e-mail data with unicode symbols
-var mailOptions = {
-    from: '"Chrys Rangel 👥" <chrys_18@hotmail.com>', // sender address
-    to: 'chrysisc18@gmail.com', // list of receivers
-    subject: 'Hello ✔', // Subject line
-    text: 'Hola 🐴', // plaintext body
-    html: '<b>Hello world 🐴</b>' // html body
-};
-*/
+
 app.get('/send',function(req,res){
 
 	var mailOptions={
@@ -46,135 +37,15 @@ app.get('/send',function(req,res){
 	transport.sendMail(mailOptions, function(error, response){
 	if(error){
 	console.log(error);
-	res.end("error");
+	res.end('error');
 	}else{
-	console.log("Message sent: " + response.message);
-	res.end("sent");
+    console.log("Message sent: " + response.message);
+	  res.end('sent');
 	}
 	});
 
 });
 
-
-/*
-app.get('/js/:name', function (req, res, next) {
-
-  var options = {
-    root: __dirname + '/js/',
-    dotfiles: 'deny',
-    headers: {
-        'x-timestamp': Date.now(),
-        'x-sent': true
-    }
-  };
-
-  var fileName = req.params.name;
-  res.sendFile(fileName, options, function (err) {
-    if (err) {
-      console.log(err);
-      res.status(err.status).end();
-    }
-    else {
-      console.log('Sent:', fileName);
-    }
-  });
-
+app.listen(process.env.PORT || 3000, function(){
+  console.log("Servidor corriendo");
 });
-
-app.get('/:name', function (req, res, next) {
-
-  var options = {
-    root: __dirname,
-    dotfiles: 'deny',
-    headers: {
-        'x-timestamp': Date.now(),
-        'x-sent': true
-    }
-  };
-
-  var fileName = req.params.name;
-  res.sendFile(fileName, options, function (err) {
-    if (err) {
-      console.log(err);
-      res.status(err.status).end();
-    }
-    else {
-      console.log('Sent:', fileName);
-    }
-  });
-
-});
-
-app.get('/css/:name', function (req, res, next) {
-
-  var options = {
-    root: __dirname + '/css/',
-    dotfiles: 'deny',
-    headers: {
-        'x-timestamp': Date.now(),
-        'x-sent': true
-    }
-  };
-
-  var fileName = req.params.name;
-  res.sendFile(fileName, options, function (err) {
-    if (err) {
-      console.log(err);
-      res.status(err.status).end();
-    }
-    else {
-      console.log('Sent:', fileName);
-    }
-  });
-
-});
-
-app.get('/font/roboto/:name', function (req, res, next) {
-
-  var options = {
-    root: __dirname + '/font/roboto/',
-    dotfiles: 'deny',
-    headers: {
-        'x-timestamp': Date.now(),
-        'x-sent': true
-    }
-  };
-
-  var fileName = req.params.name;
-  res.sendFile(fileName, options, function (err) {
-    if (err) {
-      console.log(err);
-      res.status(err.status).end();
-    }
-    else {
-      console.log('Sent:', fileName);
-    }
-  });
-
-});
-
-app.get('/font/material-design-icons/:name', function (req, res, next) {
-
-  var options = {
-    root: __dirname + '/font/material-design-icons/',
-    dotfiles: 'deny',
-    headers: {
-        'x-timestamp': Date.now(),
-        'x-sent': true
-    }
-  };
-
-  var fileName = req.params.name;
-  res.sendFile(fileName, options, function (err) {
-    if (err) {
-      console.log(err);
-      res.status(err.status).end();
-    }
-    else {
-      console.log('Sent:', fileName);
-    }
-  });
-
-});
-*/
-app.listen(process.env.PORT || 8000);
