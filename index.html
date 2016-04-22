@@ -201,6 +201,10 @@ $(document).ready(function(){
             $(".progress").hide();
             swal("Muchas Gracias!", "El mensaje ha sido enviado!", "success");
           }
+          else
+          {
+            sweetAlert("Oops...", "Algo ha ocurrido algo mal!", "error");
+          }
 		});
     });
 	
