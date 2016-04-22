@@ -37,7 +37,7 @@ app.get('/send',function(req,res){
 	transport.sendMail(mailOptions, function(error, response){
 	if(error){
 	console.log(error);
-	res.end('error');
+	res.end(error);
 	}else{
     console.log("Message sent: " + response.message);
 	  res.end('sent');
