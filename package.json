@@ -1,0 +1,27 @@
+{
+  "name": "portafolio_annmedina",
+  "version": "1.0.0",
+  "description": "portafolio",
+  "main": "server.js",
+  "dependencies": {
+    "nodemailer": "^0.7.1",
+    "express": "^4.13.4",
+    "request": "^2.63.0",
+    "request-json": "^0.5.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Chrysthoper/portafolio_annmedina.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Chrysthoper/portafolio_annmedina/issues"
+  },
+  "homepage": "https://github.com/Chrysthoper/portafolio_annmedina#readme"
+}
