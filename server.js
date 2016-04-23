@@ -29,19 +29,19 @@ app.get('/send',function(req,res){
 
 	var mailOptions={
 		from: '"Chrys Rangel 👥" <chrys_18@hotmail.com>', // sender address
-	   to : req.query.to,
-	   subject : req.query.subject,
-	   text : req.query.text
+		to : req.query.to,
+		subject : req.query.subject,
+		text : req.query.text
 	}
 	console.log(mailOptions);
 	transport.sendMail(mailOptions, function(error, response){
-	if(error){
-	console.log(error);
-	res.end(error);
-	}else{
-    console.log("Message sent: " + response.message);
-	  res.end('sent');
-	}
+		if(error){
+			console.log(error.message);
+			res.end(error.message);
+		}else{
+			console.log("Message sent: " + response.message);
+			res.end('sent');
+		}
 	});
 
 });

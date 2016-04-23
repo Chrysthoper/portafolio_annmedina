@@ -198,13 +198,13 @@ $(document).ready(function(){
         $.get('/send',{to:to,subject:subject,text:text}).done(function(data){
 			    if(data == "sent")
           {
-            $(".progress").hide();
             swal("Muchas Gracias!", "El mensaje ha sido enviado!", "success");
           }
           else
           {
             sweetAlert("Oops...", "Algo ha ocurrido algo mal!", "error");
           }
+          $(".progress").hide();
 		});
     });
 	
