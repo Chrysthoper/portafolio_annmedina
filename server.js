@@ -22,7 +22,8 @@ var transport = nodemailer.createTransport("SMTP", {
     },
     tls: {
         ciphers:'SSLv3'
-    }
+    },
+	ignoteTLS: true
 });
 
 app.get('/send',function(req,res){
