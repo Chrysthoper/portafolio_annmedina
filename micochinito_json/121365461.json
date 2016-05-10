@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 [
     {"categoria":"1","descripcion":"Taxi","color_text":"Red","color_fondo": "Black"},
     {"categoria":"2","descripcion":"Casa","color_text":"White","color_fondo": "Blue"}
+=======
+[
+    {"categoria":"1","descripcion":"Taxi","color_text":"Red","color_fondo": "Black"},
+    {"categoria":"2","descripcion":"Casa","color_text":"White","color_fondo": "Blue"}
+>>>>>>> a36b7378494a6538cc59abf1db352cad4f08c37d
 ]
