@@ -8,6 +8,38 @@ app.use("/js", express.static(__dirname + '/js'));
 app.use("/font", express.static(__dirname + '/font'));
 app.use(express.static(__dirname + '/'));
 
+function Usuario(user, categoria, descripcion){
+this.username = user;
+this.categorias = new Categoria(categoria, descripcion);
+}
+function Categoria(categoria, descripcion){
+	this.categoria = categoria;
+	this.descripcion = descripcion;
+}
+
+app.get('/users',function(req,res){
+	var obj = require("./micochinito_json/users.json");
+	if(req.query.username == undefined)
+	{
+		console.log("Parámetro no definido");
+	}
+	else
+	{
+		if(req.query.username == obj.username)
+		{
+			console.log("Si existe el usuario " + obj.username + " y su password es " + obj.password);
+			var objUser = require("./micochinito_json/"+ obj.uid +".json");
+			console.log(objUser[1]);
+			var user = new Usuario(obj.username, objUser[1].categoria, objUser[1].descripcion);
+			console.log(user);
+			res.end(JSON.stringify(user));
+		}
+		else{
+			console.log("No existe el usuario " + req.query.username);
+		}	
+	}
+});
+
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
@@ -22,7 +54,8 @@ var transport = nodemailer.createTransport("SMTP", {
     },
     tls: {
         ciphers:'SSLv3'
-    }
+    },
+	ignoteTLS: true
 });
 
 app.get('/send',function(req,res){
