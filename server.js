@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var path = require('path');
 var nodemailer = require('nodemailer');
+var fs = require('fs');
 
 app.use("/css", express.static(__dirname + '/css'));
 app.use("/js", express.static(__dirname + '/js'));
@@ -25,18 +26,38 @@ app.get('/users',function(req,res){
 	}
 	else
 	{
-		if(req.query.username == obj.username)
+		var SeEncontro = true;
+		for (var i=0 ; i < obj.ListaUsuarios.length ; i++)
 		{
-			console.log("Si existe el usuario " + obj.username + " y su password es " + obj.password);
-			var objUser = require("./micochinito_json/"+ obj.uid +".json");
-			console.log(objUser[1]);
-			var user = new Usuario(obj.username, objUser[1].categoria, objUser[1].descripcion);
-			console.log(user);
-			res.end(JSON.stringify(user));
+			if(req.query.username == obj.ListaUsuarios[i]["username"])
+			{
+				SeEncontro = true;
+				console.log("Si existe el usuario " + obj.ListaUsuarios[i]["username"] + " y su password es " + obj.ListaUsuarios[i]["password"]);
+				try {
+					fs.accessSync("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json", fs.F_OK);
+					var objUser = require("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json");
+					console.log(obj.ListaUsuarios[i]);
+					if(objUser != undefined)
+					{
+						var user = new Usuario(obj.ListaUsuarios[i]["username"], objUser[1].categoria, objUser[1].descripcion);
+						console.log(user);
+						res.end(JSON.stringify(user));	
+					}
+				} catch (e) {
+					console.log("No se encontró el archivo");
+					res.end("No se encontró el archivo");
+					
+				}
+			}
+			else{
+				SeEncontro = false;
+			}
 		}
-		else{
-			console.log("No existe el usuario " + req.query.username);
-		}	
+		if(!SeEncontro)
+		{
+			console.log("No existe el usuario");
+			res.end("No existe el usuario");
+		}
 	}
 });
 
