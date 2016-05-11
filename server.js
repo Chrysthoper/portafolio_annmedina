@@ -20,10 +20,50 @@ function Categoria(categoria, descripcion){
 
 app.post('/import', function(req, res){
     console.log('POST /');
-	console.log(req.body);
-	console.log(req.body.username);
-    console.dir(req.body);
+	console.log(req.headers.authorization);
+    console.dir(req.headers.authorization);
     res.writeHead(200, {'Content-Type': 'text/html'});
+	
+	var obj = require("./micochinito_json/users.json");
+	if(req.headers.authorization == undefined)
+	{
+		console.log("Parámetro no definido");
+	}
+	else
+	{
+		var SeEncontro = true;
+		for (var i=0 ; i < obj.ListaUsuarios.length ; i++)
+		{
+			if(req.headers.authorization == "body=" + obj.ListaUsuarios[i]["username"])
+			{
+				SeEncontro = true;
+				console.log("Si existe el usuario " + obj.ListaUsuarios[i]["username"] + " y su password es " + obj.ListaUsuarios[i]["password"]);
+				try {
+					fs.accessSync("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json", fs.F_OK);
+					var objUser = require("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json");
+					console.log(obj.ListaUsuarios[i]);
+					if(objUser != undefined)
+					{
+						var user = new Usuario(obj.ListaUsuarios[i]["username"], objUser[1].categoria, objUser[1].descripcion);
+						console.log(user);
+						res.end("El password del usuario es " + obj.ListaUsuarios[i]["password"]);	
+					}
+				} catch (e) {
+					console.log("No se encontró el archivo");
+					res.end("No se encontró el archivo pero el password es " + obj.ListaUsuarios[i]["password"]);
+				}
+			}
+			else{
+				SeEncontro = false;
+			}
+		}
+		if(!SeEncontro)
+		{
+			console.log("No existe el usuario");
+			res.end("No existe el usuario");
+		}
+	}
+	
     res.end('thanks');
 });
 
