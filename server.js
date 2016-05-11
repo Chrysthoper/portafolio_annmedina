@@ -18,6 +18,15 @@ function Categoria(categoria, descripcion){
 	this.descripcion = descripcion;
 }
 
+app.post('/import', function(req, res){
+    console.log('POST /');
+	console.log(req.body);
+	console.log(req.body.username);
+    console.dir(req.body);
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end('thanks');
+});
+
 app.get('/users',function(req,res){
 	var obj = require("./micochinito_json/users.json");
 	if(req.query.username == undefined)
