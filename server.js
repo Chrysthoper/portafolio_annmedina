@@ -4,6 +4,7 @@ var path = require('path');
 var nodemailer = require('nodemailer');
 var fs = require('fs');
 var bodyParser = require('body-parser')
+var jsonfile = require('jsonfile')
 
 // parse application/x-www-form-urlencoded
 //app.use(bodyParser.urlencoded({ extended: false }))
@@ -81,6 +82,45 @@ app.post('/import', function(req, res){
 	}
 	
     res.end('thanks');
+});
+
+app.get('/export',function(req,res){
+	var uid = 316846841;
+	var file = './micochinito_json/' + uid + '.json'
+	var obj = {
+		ListaCategorias : [
+			{
+				categoria : "2",
+				descripcion : "Casa",
+				color_text : "White",
+				color_fondo: "Blue"
+			},
+			{
+				categoria : "4",
+				descripcion : "Banamex",
+				color_text : "Black",
+				color_fondo: "White"
+			},
+			{
+				categoria : "5",
+				descripcion : "Bancomer",
+				color_text : "Blue",
+				color_fondo: "Gray"
+			}
+		],
+		ListaCuentas : [
+			{
+				cuenta : "1",
+				descripcion : "Casa",
+				color_text : "White",
+				color_fondo: "Blue"
+			}
+		]
+	};
+	
+	jsonfile.writeFile(file, obj, function (err) {
+		console.error(err);
+	});
 });
 
 app.get('/users',function(req,res){
