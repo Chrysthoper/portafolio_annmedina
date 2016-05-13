@@ -3,6 +3,13 @@ var app = express();
 var path = require('path');
 var nodemailer = require('nodemailer');
 var fs = require('fs');
+var bodyParser = require('body-parser')
+
+// parse application/x-www-form-urlencoded
+//app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
 
 app.use("/css", express.static(__dirname + '/css'));
 app.use("/js", express.static(__dirname + '/js'));
@@ -20,12 +27,10 @@ function Categoria(categoria, descripcion){
 
 app.post('/import', function(req, res){
     console.log('POST /');
-	console.log(req.headers.authorization);
-    console.dir(req.headers.authorization);
-    res.writeHead(200, {'Content-Type': 'text/html'});
+	console.log(JSON.stringify(req.body, null, 2));
 	
 	var obj = require("./micochinito_json/users.json");
-	if(req.headers.authorization == undefined)
+	if(req.body.username == undefined)
 	{
 		console.log("Parámetro no definido");
 	}
@@ -34,19 +39,30 @@ app.post('/import', function(req, res){
 		var SeEncontro = true;
 		for (var i=0 ; i < obj.ListaUsuarios.length ; i++)
 		{
-			if(req.headers.authorization == "body=" + obj.ListaUsuarios[i]["username"])
+			if(req.body.username == obj.ListaUsuarios[i]["username"] || req.body.username == "Todos")
 			{
 				SeEncontro = true;
 				console.log("Si existe el usuario " + obj.ListaUsuarios[i]["username"] + " y su password es " + obj.ListaUsuarios[i]["password"]);
 				try {
-					fs.accessSync("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json", fs.F_OK);
-					var objUser = require("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json");
-					console.log(obj.ListaUsuarios[i]);
-					if(objUser != undefined)
+					//fs.accessSync("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json", fs.F_OK);
+					//var objUser = require("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json");
+					//console.log(obj.ListaUsuarios[i]);
+					//if(objUser != undefined)
+					if(req.body.username == "Todos")
 					{
-						var user = new Usuario(obj.ListaUsuarios[i]["username"], objUser[1].categoria, objUser[1].descripcion);
-						console.log(user);
-						res.end("El password del usuario es " + obj.ListaUsuarios[i]["password"]);	
+						res.setHeader('Content-Type', 'text/plain')
+						res.write('you posted:\n')
+						res.end(JSON.stringify(obj, null, 2))
+					}
+					else
+					{
+						res.setHeader('Content-Type', 'text/plain')
+						res.write('you posted:\n')
+						res.end(JSON.stringify(obj.ListaUsuarios[i], null, 2))
+						
+						//var user = new Usuario(obj.ListaUsuarios[i]["username"], objUser[1].categoria, objUser[1].descripcion);
+						//console.log(user);
+						//res.end("El password del usuario es " + obj.ListaUsuarios[i]["password"]);	
 					}
 				} catch (e) {
 					console.log("No se encontró el archivo");
