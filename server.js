@@ -27,101 +27,96 @@ function Categoria(categoria, descripcion){
 }
 
 app.post('/import', function(req, res){
-    console.log('POST /');
+    console.log('import /');
 	console.log(JSON.stringify(req.body, null, 2));
 	
 	var obj = require("./micochinito_json/users.json");
-	if(req.body.username == undefined)
+	if(req.body.credentials == undefined)
 	{
 		console.log("Parámetro no definido");
 	}
 	else
 	{
-		var SeEncontro = true;
-		for (var i=0 ; i < obj.ListaUsuarios.length ; i++)
-		{
-			if(req.body.username == obj.ListaUsuarios[i]["username"] || req.body.username == "Todos")
-			{
-				SeEncontro = true;
-				console.log("Si existe el usuario " + obj.ListaUsuarios[i]["username"] + " y su password es " + obj.ListaUsuarios[i]["password"]);
-				try {
-					//fs.accessSync("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json", fs.F_OK);
-					//var objUser = require("./micochinito_json/"+ obj.ListaUsuarios[i]["uid"] +".json");
-					//console.log(obj.ListaUsuarios[i]);
-					//if(objUser != undefined)
-					if(req.body.username == "Todos")
-					{
-						res.setHeader('Content-Type', 'text/plain')
-						res.write('you posted:\n')
-						res.end(JSON.stringify(obj, null, 2))
-					}
-					else
-					{
-						res.setHeader('Content-Type', 'text/plain')
-						res.write('you posted:\n')
-						res.end(JSON.stringify(obj.ListaUsuarios[i], null, 2))
-						
-						//var user = new Usuario(obj.ListaUsuarios[i]["username"], objUser[1].categoria, objUser[1].descripcion);
-						//console.log(user);
-						//res.end("El password del usuario es " + obj.ListaUsuarios[i]["password"]);	
-					}
-				} catch (e) {
-					console.log("No se encontró el archivo");
-					res.end("No se encontró el archivo pero el password es " + obj.ListaUsuarios[i]["password"]);
-				}
-			}
-			else{
-				SeEncontro = false;
-			}
-		}
-		if(!SeEncontro)
+		var credentials = req.body.credentials;
+		
+		var Usuario = ExisteUsuario(credentials);
+		if(Usuario == null)
 		{
 			console.log("No existe el usuario");
 			res.end("No existe el usuario");
+		}
+		try {
+			var uid = Usuario.uid;
+			fs.accessSync("./micochinito_json/"+ uid +".json", fs.F_OK);
+			var file = require("./micochinito_json/"+ uid +".json");
+			
+			if(file != undefined)
+			{
+				res.setHeader('Content-Type', 'text/plain')
+				res.end(JSON.stringify(file, null, 2))
+			}
+			else{
+				console.log("No se encontró el archivo");
+				res.end("No se encontró el archivo");
+			}
+		} catch (e) {
+			console.log("No se encontró el archivo");
+			res.end("Hubo un error al leer el archivo");
+		}
+	}
+    res.end('thanks');
+});
+
+app.post('/export', function(req, res){
+    console.log('export /');
+	console.log(JSON.stringify(req.body, null, 2));
+	if(req.body.credentials == undefined)
+	{
+		console.log("Parámetro no definido");
+	}
+	else
+	{
+		var credentials = req.body.credentials;
+		
+		var Usuario = ExisteUsuario(credentials);
+		if(Usuario == null)
+		{
+			console.log("No existe el usuario");
+			res.end("No existe el usuario");
+		}
+		try {
+			var uid = Usuario["uid"];
+			var file = './micochinito_json/' + uid + '.json'
+			
+			jsonfile.writeFile(file, req.body, function (err) {
+				if(err == null)
+					console.error(err);
+			});
+			
+			res.setHeader('Content-Type', 'text/plain')
+			res.end(JSON.stringify("La exportación fue exitosa", null, 2))
+		} catch (e) {
+			console.log("No se encontró el archivo");
+			res.end("No se encontró el archivo");
 		}
 	}
 	
     res.end('thanks');
 });
 
-app.get('/export',function(req,res){
-	var uid = 316846841;
-	var file = './micochinito_json/' + uid + '.json'
-	var obj = {
-		ListaCategorias : [
-			{
-				categoria : "2",
-				descripcion : "Casa",
-				color_text : "White",
-				color_fondo: "Blue"
-			},
-			{
-				categoria : "4",
-				descripcion : "Banamex",
-				color_text : "Black",
-				color_fondo: "White"
-			},
-			{
-				categoria : "5",
-				descripcion : "Bancomer",
-				color_text : "Blue",
-				color_fondo: "Gray"
-			}
-		],
-		ListaCuentas : [
-			{
-				cuenta : "1",
-				descripcion : "Casa",
-				color_text : "White",
-				color_fondo: "Blue"
-			}
-		]
-	};
+function ExisteUsuario(credentials)
+{
+	var obj = require("./micochinito_json/users.json");
 	
-	jsonfile.writeFile(file, obj, function (err) {
-		console.error(err);
-	});
-});
+	for (var i=0 ; i < obj.ListaUsuarios.length ; i++)
+	{
+		if(credentials.username == obj.ListaUsuarios[i]["username"] || credentials.username == "Todos")
+		{
+			return obj.ListaUsuarios[i];
+		}
+	}
+	return null;
+}
 
 app.get('/users',function(req,res){
 	var obj = require("./micochinito_json/users.json");
